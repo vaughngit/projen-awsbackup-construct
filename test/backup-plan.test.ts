@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { aws_rds as rds, aws_ec2 as ec2, aws_backup as bk } from 'aws-cdk-lib';
 import { Match, Template } from 'aws-cdk-lib/assertions';
-import { Backup } from '../src/index';
+import { BackupConstruct } from '../src/index';
 
 let testTemplate: Template;
 
@@ -24,7 +24,7 @@ const createRequiredResources = () => {
 
 beforeAll(() => {
   const { stack, db } = createRequiredResources();
-  new Backup(stack, 'TestBk', {
+  new BackupConstruct(stack, 'TestBk', {
     backupPlanName: 'TestPkPlan',
     backupRateHour: 2,
     backupCompletionWindow: cdk.Duration.hours(2),
@@ -60,7 +60,7 @@ test('backup vault is created', () => {
 
 test('validate default args', () => {
   const { stack, db } = createRequiredResources();
-  new Backup(stack, 'TestBk', {
+  new BackupConstruct(stack, 'TestBk', {
     backupPlanName: 'TestPkPlan2',
     resources: [bk.BackupResource.fromRdsDatabaseInstance(db)],
   });
@@ -88,7 +88,7 @@ test('validate start window must be at least 60 min less than completion window'
   const { stack, db } = createRequiredResources();
   expect(
     () =>
-      new Backup(stack, 'TestBk', {
+      new BackupConstruct(stack, 'TestBk', {
         backupPlanName: 'TestPkPlan2',
         resources: [bk.BackupResource.fromRdsDatabaseInstance(db)],
         backupCompletionWindow: cdk.Duration.hours(1),

@@ -13,12 +13,12 @@ const project = new awscdk.AwsCdkConstructLibrary({
   },
   license: 'MIT-0',
   releaseToNpm: false,
-    //   packageName: 'vaughntech-nodejs-lambda-construct', 
+  //   packageName: 'vaughntech-nodejs-lambda-construct',
   //  description: 'AWS Node.js Lambda functions baselined with powertool powered tracing, structured logging, custom metrics, and cloudwatch dashboards to help visualize
   // publishToNuget: {
   //   dotNetNamespace: 'VaughnTech.CDK',
   //   packageId: 'VaughnTech.CDK.NodeJsLambdaConstruct',
-  // }, 
+  // },
   // publishToPypi: {
   //   distName: 'cdk-backup-plan',
   //   module: 'cdk_backup_plan',
@@ -27,8 +27,8 @@ const project = new awscdk.AwsCdkConstructLibrary({
 });
 
 
-project.gitignore.addPatterns('.dev/','cdk.out');
-project.npmignore.addPatterns('cdk.out', 'examples', 'gitpod_scripts')
+project.gitignore.addPatterns('.dev/', 'cdk.out');
+project.npmignore.addPatterns('cdk.out', 'examples', 'gitpod_scripts');
 
 
 project.gitpod.addCustomTask({

@@ -1,9 +1,4 @@
-import {
-  Duration,
-  CfnOutput,
-  aws_backup as bk,
-  aws_events as events,
-} from 'aws-cdk-lib';
+import { Duration, CfnOutput, aws_backup as bk, aws_events as events } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 export interface BackupProps {
@@ -55,9 +50,9 @@ export interface BackupProps {
   /**
    * How frequently backup jobs would be started.
    *
-   * @default - 24 hours
+   * @default - 23 hours
    */
-  readonly backupRateHour?: number;
+  readonly backupRate?: number;
 }
 
 /**
@@ -65,7 +60,7 @@ export interface BackupProps {
  *
  * @stability stable
  */
-export class Backup extends Construct {
+export class BackupConstruct extends Construct {
   /**
    * Backup plan
    */
@@ -79,11 +74,10 @@ export class Backup extends Construct {
   constructor(scope: Construct, id: string, props: BackupProps) {
     super(scope, id);
 
-    const hourlyRate = `0/${props.backupRateHour || 24}`;
+    //const hourlyRate = `0/${props.backupRateHour || 24}`;
 
     const completionWindow = props.backupCompletionWindow || Duration.hours(3);
-    const startWindow =
-      props.backupStartWindow || Duration.hours(completionWindow.toHours() - 1);
+    const startWindow = props.backupStartWindow || Duration.hours(completionWindow.toHours() - 1);
 
     if (completionWindow.toHours() - startWindow.toHours() < 1) {
       throw Error(
@@ -98,7 +92,8 @@ export class Backup extends Construct {
       // Only cron expressions are supported
       scheduleExpression: events.Schedule.cron({
         minute: '0',
-        hour: hourlyRate,
+       // hour: hourlyRate,
+       hour: '4'
       }),
       moveToColdStorageAfter: props.moveBackupToColdStorageAfter,
     });
