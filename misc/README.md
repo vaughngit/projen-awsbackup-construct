@@ -1,5 +1,7 @@
 # CDK Backup Plan
 
+![Build](https://github.com/aws-samples/cdk-backup-plan/workflows/build/badge.svg)
+![Release](https://github.com/aws-samples/cdk-backup-plan/workflows/release/badge.svg)
 
 Provides an easy to use reusable CDK construct to create [Backup Plans](https://docs.aws.amazon.com/aws-backup/latest/devguide/about-backup-plans.html) using [AWS Backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html). It allows to indicate how frequently and what resources to backup.
 
@@ -10,26 +12,20 @@ Provides an easy to use reusable CDK construct to create [Backup Plans](https://
 NPM install:
 
 ```sh
-npm install vt-aws-backup-plan
+npm install cdk-backup-plan
 ```
 
 PyPi install:
 
 ```sh
-pip install vt.aws-backup-plan
-```
-
-DOTNET/C#/.Net install:
-
-```sh
-dotnet add package VaughnTech.CDK.awsBackupPlan
+pip install cdk-backup-plan
 ```
 
 ## Usage
 
 ```typescript
 // ...
-import { Backup } from "vt-aws-backup-plan";
+import { Backup } from "cdk-backup-plan";
 
 // ...
 const vpc = new ec2.Vpc(stack, "TestVPC");

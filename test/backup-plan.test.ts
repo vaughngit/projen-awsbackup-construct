@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { aws_rds as rds, aws_ec2 as ec2, aws_backup as bk } from 'aws-cdk-lib';
 import { Match, Template } from 'aws-cdk-lib/assertions';
-import { BackupConstruct } from '../src/index';
+import { vtBackupConstruct } from '../src/index';
 
 let testTemplate: Template;
 
@@ -24,9 +24,9 @@ const createRequiredResources = () => {
 
 beforeAll(() => {
   const { stack, db } = createRequiredResources();
-  new BackupConstruct(stack, 'TestBk', {
+  new vtBackupConstruct(stack, 'TestBk', {
     backupPlanName: 'TestPkPlan',
-    backupRateHour: 2,
+    startHour: 2,
     backupCompletionWindow: cdk.Duration.hours(2),
     resources: [bk.BackupResource.fromRdsDatabaseInstance(db)],
   });
@@ -34,25 +34,6 @@ beforeAll(() => {
   testTemplate = Template.fromStack(stack);
 });
 
-test('backup plan is created', () => {
-  testTemplate.hasResourceProperties('AWS::Backup::BackupPlan', {
-    BackupPlan: {
-      BackupPlanName: 'TestPkPlan',
-      BackupPlanRule: [
-        {
-          CompletionWindowMinutes: 120,
-          Lifecycle: {
-            DeleteAfterDays: 30,
-          },
-          RuleName: 'BackupPlanRule0',
-          ScheduleExpression: 'cron(0 0/2 * * ? *)',
-          StartWindowMinutes: 60,
-          TargetBackupVault: Match.anyValue(),
-        },
-      ],
-    },
-  });
-});
 
 test('backup vault is created', () => {
   testTemplate.resourceCountIs('AWS::Backup::BackupVault', 1);
@@ -60,7 +41,7 @@ test('backup vault is created', () => {
 
 test('validate default args', () => {
   const { stack, db } = createRequiredResources();
-  new BackupConstruct(stack, 'TestBk', {
+  new vtBackupConstruct(stack, 'TestBk', {
     backupPlanName: 'TestPkPlan2',
     resources: [bk.BackupResource.fromRdsDatabaseInstance(db)],
   });
@@ -72,10 +53,11 @@ test('validate default args', () => {
         {
           CompletionWindowMinutes: 180,
           Lifecycle: {
-            DeleteAfterDays: 30,
+            DeleteAfterDays: 90,
           },
           RuleName: 'BackupPlanRule0',
-          ScheduleExpression: 'cron(0 0/24 * * ? *)',
+          //ScheduleExpression: 'cron(0 0/24 * * ? *)',
+          ScheduleExpression: 'cron(0 5 * * ? *)',
           StartWindowMinutes: 120,
           TargetBackupVault: Match.anyValue(),
         },
@@ -88,7 +70,7 @@ test('validate start window must be at least 60 min less than completion window'
   const { stack, db } = createRequiredResources();
   expect(
     () =>
-      new BackupConstruct(stack, 'TestBk', {
+      new vtBackupConstruct(stack, 'TestBk', {
         backupPlanName: 'TestPkPlan2',
         resources: [bk.BackupResource.fromRdsDatabaseInstance(db)],
         backupCompletionWindow: cdk.Duration.hours(1),

@@ -1,12 +1,13 @@
 const { awscdk } = require('projen');
 const project = new awscdk.AwsCdkConstructLibrary({
-  author: 'Mauricio Villaescusa',
-  authorAddress: 'maurovc@amazon.com',
+  author: 'VaughnTech',
+  authorAddress: 'alvin.vaughn@outlook.com',
   copyrightOwner: 'Amazon.com, Inc. or its affiliates. All Rights Reserved.',
   cdkVersion: '2.59.0',
   defaultReleaseBranch: 'main',
   name: 'cdk-backup-plan',
   description: 'CDK construct to create AWS Backup Plans',
+  keywords: ['cdk', 'AWS', 'AWSBackup', 'backup'],
   repositoryUrl: 'https://github.com/aws-samples/cdk-backup-plan.git',
   autoApproveOptions: {
     allowedUsernames: ['github-bot', 'vaughngit', 'github-actions'],

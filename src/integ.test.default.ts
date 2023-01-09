@@ -1,11 +1,11 @@
 import { App, Stack, aws_backup as bk } from 'aws-cdk-lib';
 //import { aws_ec2 as ec2, aws_backup as bk } from 'aws-cdk-lib';
-import { BackupConstruct } from './index';
+import { vtBackupConstruct } from './index';
 
 const aws_region = 'us-east-2';
-const solution = 'testingconstruct';
+const solution = 'backupByTag';
 const environment = 'dev';
-const costcenter = 'bex';
+const costcenter = 'cdkappdev';
 
 export class IntegTesting {
   readonly stack: Stack[];
@@ -28,15 +28,13 @@ export class IntegTesting {
     });
 
 
-    new BackupConstruct(stack, 'integration-test-construct', {
+    new vtBackupConstruct(stack, 'integration-test-construct', {
       backupPlanName: 'intgtestBkPlan',
+      startHour: 3,
+      startMinute: 0,
       resources: [bk.BackupResource.fromTag('solution', 'awsbackuparch', bk.TagOperation.STRING_EQUALS)],
     });
 
-
-    // new ConstructWithProperties(stack, 'integrated-construct-test',
-    //   { myProp: 'foo' }, { otherProp: 'bar' },
-    // );
 
     //inline lambda function integration
     // new InlineLambdaConstruct(stack, 'InlineLambdaConstruct', {

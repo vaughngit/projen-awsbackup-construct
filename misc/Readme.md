@@ -1,5 +1,9 @@
 ## Testing:
 
-cdk synth --app='./lib/integ.default.js'
-cdk deploy --app='./lib/integ.default.js'
-Once the build is successful its ready to deploy locally.
+cdk synth --app='./lib/integ.test.default.js'
+cdk deploy --app='./lib/integ.test.default.js'
+cdk destroy --app='./lib/integ.test.default.js'
+
+## Login via cli
+
+aws sso login --no-browser 

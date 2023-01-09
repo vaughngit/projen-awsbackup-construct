@@ -33,26 +33,33 @@ export interface BackupProps {
   readonly backupStartWindow?: Duration;
 
   /**
-   * Specifies the duration after creation that a recovery point is deleted.
+   * Specifies the time after creation that a recovery point is deleted.
    * Must be greater than moveToColdStorageAfter.
    *
-   * @default - 30 days
+   * @default - 60 days
    */
   readonly deleteBackupAfter?: Duration;
 
   /**
-   * Specifies the duration after creation that a recovery point is moved to cold storage.
+   * Specifies the time after creation that a recovery point is moved to cold storage.
    *
-   * @default - recovery point is never moved to cold storage
+   * @default - 45 recovery point is never moved to cold storage
    */
   readonly moveBackupToColdStorageAfter?: Duration;
 
   /**
    * How frequently backup jobs would be started.
    *
-   * @default - 23 hours
+   * @default - 3
    */
-  readonly backupRate?: number;
+  readonly startHour?: number;
+
+  /**
+   * How frequently backup jobs would be started.
+   *
+   * @default - 0
+   */
+  readonly startMinute?: number;
 }
 
 /**
@@ -60,7 +67,7 @@ export interface BackupProps {
  *
  * @stability stable
  */
-export class BackupConstruct extends Construct {
+export class vtBackupConstruct extends Construct {
   /**
    * Backup plan
    */
@@ -75,6 +82,16 @@ export class BackupConstruct extends Construct {
     super(scope, id);
 
     //const hourlyRate = `0/${props.backupRateHour || 24}`;
+    const {
+      startHour = 5,
+      startMinute = 0,
+    } = props;
+
+    if ((startHour! < 0) || ( startHour! > 23) ) {
+      throw Error(
+        'Backup hour must be between 0 and 23 hours',
+      );
+    }
 
     const completionWindow = props.backupCompletionWindow || Duration.hours(3);
     const startWindow = props.backupStartWindow || Duration.hours(completionWindow.toHours() - 1);
@@ -88,12 +105,12 @@ export class BackupConstruct extends Construct {
     const scheduledBkRule = new bk.BackupPlanRule({
       completionWindow,
       startWindow,
-      deleteAfter: props.deleteBackupAfter || Duration.days(30),
+      deleteAfter: props.deleteBackupAfter || Duration.days(90),
       // Only cron expressions are supported
       scheduleExpression: events.Schedule.cron({
-        minute: '0',
-       // hour: hourlyRate,
-       hour: '2'
+        minute: startMinute.toString(),
+        // hour: hourlyRate,
+        hour: startHour.toString(),
       }),
       moveToColdStorageAfter: props.moveBackupToColdStorageAfter,
     });
