@@ -93,7 +93,7 @@ export class BackupConstruct extends Construct {
       scheduleExpression: events.Schedule.cron({
         minute: '0',
        // hour: hourlyRate,
-       hour: '4'
+       hour: '2'
       }),
       moveToColdStorageAfter: props.moveBackupToColdStorageAfter,
     });
